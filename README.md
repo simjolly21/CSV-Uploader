@@ -1,4 +1,4 @@
-# djreact_csv
+# CSV uploder
 Upload and save csv files with django and react
 
 ***
