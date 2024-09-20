@@ -3,26 +3,26 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: ./src/Dockerfile  # Specify Dockerfile location
+      dockerfile: ./src/Dockerfile  # Dockerfile located in backend/src
     volumes:
-      - ./backend:/app  # Maps the entire backend folder
+      - ./backend:/backend  # Map backend folder to container
     ports:
-      - "8000:8000"
+      - "8000:8000"  # Expose port 8000 for the Django app
     stdin_open: true
     tty: true
-    command: python3 src/manage.py runserver 0.0.0.0:8000  # Specify path to manage.py
     environment:
-      - PYTHONUNBUFFERED=1  # Ensure Python output is displayed in Docker logs
+      - PYTHONUNBUFFERED=1  # Ensure logs show up immediately
+    command: python3 src/manage.py runserver 0.0.0.0:8000  # Adjust path to manage.py
 
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile  # Dockerfile is directly in the frontend folder
+      dockerfile: Dockerfile  # Dockerfile located in frontend folder
     volumes:
-      - ./frontend:/app  # Map frontend code to /app
-      - /app/node_modules  # Prevent mounting node_modules from the host machine
+      - ./frontend:/frontend  # Map frontend folder to container
+      - /frontend/node_modules  # One-way volume to avoid overriding node_modules
     ports:
-      - "3000:3000"
+      - "3000:3000"  # Expose port 3000 for the React app
     environment:
       - NODE_ENV=development
     depends_on:
