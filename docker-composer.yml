@@ -1,20 +1,26 @@
 version: "3.2"
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: ./src/Dockerfile  # Specify Dockerfile location
     volumes:
-      - ./backend:/app/backend
+      - ./backend:/app  # Maps the entire backend folder
     ports:
       - "8000:8000"
     stdin_open: true
     tty: true
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: python3 src/manage.py runserver 0.0.0.0:8000  # Specify path to manage.py
+    environment:
+      - PYTHONUNBUFFERED=1  # Ensure Python output is displayed in Docker logs
+
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile  # Dockerfile is directly in the frontend folder
     volumes:
-      - ./frontend:/app
-      # One-way volume to use node_modules from inside image
-      - /app/node_modules
+      - ./frontend:/app  # Map frontend code to /app
+      - /app/node_modules  # Prevent mounting node_modules from the host machine
     ports:
       - "3000:3000"
     environment:
