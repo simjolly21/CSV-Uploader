@@ -1,19 +1,22 @@
 # Use an official Python runtime as a parent image
 FROM python:3.12
 
-# Adding backend directory to make absolute filepaths consistent across services
-WORKDIR /app/src
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Install Python dependencies
-COPY requirements.txt /app/src
-RUN pip3 install --upgrade pip -r requirements.txt
+# Set the working directory to the src folder inside the backend
+WORKDIR /backend/src
 
-# Add the rest of the code
-COPY . /app/src
+# Copy the requirements file into the working directory
+COPY requirements.txt /backend/src/
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 8000 available for the app
+# Copy the rest of the backend code into the working directory
+COPY . /backend/src/
+
+# Expose port 8000
 EXPOSE 8000
 
-# Be sure to use 0.0.0.0 for the host within the Docker container,
-# otherwise the browser won't be able to find it
-CMD python3 manage.py runserver 0.0.0.0:8000
+# Run Django development server from src folder
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
